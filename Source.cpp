@@ -9,19 +9,10 @@ class Matrix2D
 public:
 	vector<vector<int>> Matrix;
 
-	Matrix2D(string type) // stop laughing at me! this'll change!
+	Matrix2D(int size_i, int size_j)
 	{
-		if (type == "2x2")
-		{
-			Matrix = { {0, 0},
-					   {0, 0} };
-		}
-		else if (type == "3x3")
-		{
-			Matrix = { {0, 0, 0},
-					   {0, 0, 0},
-					   {0, 0, 0} };
-		}
+		vector<vector<int>> matrix(size_j, vector<int>(size_i));
+		Matrix = matrix;
 	}
 
 	void SetIJ( int _i, int _j, int num)
@@ -40,6 +31,11 @@ public:
 		}
 	}
 
+	void PrintMatrixSize()
+	{
+		cout << "Matrix Size: (" << Matrix[1].size() << "x" << Matrix.size() << ")" << endl;
+	}
+
 	void PrintMatrix()
 	{
 		for (size_t i = 0; i < Matrix.size(); i++)
@@ -55,9 +51,10 @@ public:
 
 int main()
 {
-	Matrix2D test("3x3");
-	test.FillMatrix(6);
+	Matrix2D test(2, 7);
+	test.FillMatrix(7);
 	test.PrintMatrix();
+	test.PrintMatrixSize();
 
 	return 0;
 }
