@@ -47,14 +47,116 @@ public:
 			cout << endl;
 		}
 	}
+
+	int Size_I()
+	{
+		return Matrix[1].size();
+	}
+	int Size_J()
+	{
+		return Matrix.size();
+	}
 };
+
+Matrix2D AddMatrix(Matrix2D*, int);
+Matrix2D AddMatrix(Matrix2D*, Matrix2D*);
+Matrix2D MultiplyMatrix(Matrix2D*, int);
+Matrix2D MultiplyMatrix(Matrix2D*, Matrix2D*);
+int CoshBenFormulla(Matrix2D *, Matrix2D *);
 
 int main()
 {
-	Matrix2D test(2, 7);
-	test.FillMatrix(7);
-	test.PrintMatrix();
-	test.PrintMatrixSize();
+	Matrix2D A(2, 3);
+	A.SetIJ(0, 0, 2);
+	A.SetIJ(0, 1, 5);
+	A.SetIJ(1, 0, 3);
+	A.SetIJ(1, 1, -1);
+	A.SetIJ(2, 0, 8);
+	A.SetIJ(2, 1, 6);
+
+	Matrix2D B(3, 2);
+	B.SetIJ(0, 0, 3);
+	B.SetIJ(0, 1, 7);
+	B.SetIJ(0, 2, 9);
+	B.SetIJ(1, 0, -2);
+	B.SetIJ(1, 1, -5);
+	B.SetIJ(1, 2, 4);
+
+	A.PrintMatrix();
+	cout << endl << endl << endl << endl;
+	B.PrintMatrix();
+	cout << endl << endl << endl << endl;
+
+	Matrix2D AB = MultiplyMatrix(&A, &B);
+	AB.PrintMatrix();
+
+	// Multiplication Doesn't work. Possiblt i-j mixup ;(
 
 	return 0;
+}
+
+Matrix2D AddMatrix(Matrix2D* matrix, int additionNum)
+{
+	Matrix2D temp = *matrix;
+	for (size_t i = 0; i < matrix->Matrix.size(); i++)
+	{
+		for (size_t j = 0; j < matrix->Matrix[i].size(); j++)
+		{
+			temp.Matrix[i][j] += additionNum;
+		}
+	}
+	return temp;
+}
+
+Matrix2D AddMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
+{
+	if (matrix1->Size_I() == matrix2->Size_I() && matrix1->Size_J() == matrix2->Size_J())
+	{
+		Matrix2D temp(matrix1->Size_I(), matrix1->Size_J());
+		for (size_t i = 0; i < matrix1->Matrix.size(); i++)
+		{
+			for (size_t j = 0; j < matrix1->Matrix[i].size(); j++)
+			{
+				temp.Matrix[i][j] = matrix1->Matrix[i][j] + matrix2->Matrix[i][j];
+			}
+		}
+		return temp;
+	}
+	else
+	{
+		//critical situition. NEEDS AVOIDING
+	}
+}
+
+Matrix2D MultiplyMatrix(Matrix2D* matrix, int multiplicationNum)
+{
+	Matrix2D temp = *matrix;
+	for (size_t i = 0; i < matrix->Matrix.size(); i++)
+	{
+		for (size_t j = 0; j < matrix->Matrix[i].size(); j++)
+		{
+			temp.Matrix[i][j] *= multiplicationNum;
+		}
+	}
+	return temp;
+}
+
+Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
+{
+	if (matrix1->Size_I() == matrix2->Size_J())
+	{
+		Matrix2D temp(matrix1->Size_I(), matrix1->Size_J());
+		temp.FillMatrix(0);
+		for (size_t i = 0; i < matrix1->Size_I(); i++)
+		{
+			for (size_t j = 0; j < matrix2->Size_J(); j++)
+			{
+				for (size_t k = 0; k < matrix1->Size_I(); k++)
+				{
+					temp.Matrix[i][j] = matrix1->Matrix[i][k] * matrix2->Matrix[k][j];
+				}
+			}
+		}
+		return temp;
+	}
 }
