@@ -9,15 +9,15 @@ class Matrix2D
 public:
 	vector<vector<int>> Matrix;
 
-	Matrix2D(int size_i, int size_j)
+	Matrix2D(int m, int n)
 	{
-		vector<vector<int>> matrix(size_j, vector<int>(size_i));
+		vector<vector<int>> matrix(m, vector<int>(n));
 		Matrix = matrix;
 	}
 
 	void SetIJ( int _i, int _j, int num)
 	{
-		Matrix[_i][_j] = num;
+		Matrix[_i - 1][_j - 1] = num;
 	}
 
 	void FillMatrix(int num)
@@ -33,7 +33,7 @@ public:
 
 	void PrintMatrixSize()
 	{
-		cout << "Matrix Size: (" << Matrix[1].size() << "x" << Matrix.size() << ")" << endl;
+		cout << "Matrix Size: (" << Matrix.size() << "x" << Matrix[0].size() << ")" << endl;
 	}
 
 	void PrintMatrix()
@@ -48,13 +48,13 @@ public:
 		}
 	}
 
-	int Size_I()
-	{
-		return Matrix[1].size();
-	}
-	int Size_J()
+	int Size_M()
 	{
 		return Matrix.size();
+	}
+	int Size_N()
+	{
+		return Matrix[0].size();
 	}
 };
 
@@ -66,31 +66,25 @@ int CoshBenFormulla(Matrix2D *, Matrix2D *);
 
 int main()
 {
-	Matrix2D A(2, 3);
-	A.SetIJ(0, 0, 2);
-	A.SetIJ(0, 1, 5);
-	A.SetIJ(1, 0, 3);
-	A.SetIJ(1, 1, -1);
-	A.SetIJ(2, 0, 8);
-	A.SetIJ(2, 1, 6);
+	Matrix2D A(3, 1);
+	A.FillMatrix(2);
 
-	Matrix2D B(3, 2);
-	B.SetIJ(0, 0, 3);
-	B.SetIJ(0, 1, 7);
-	B.SetIJ(0, 2, 9);
-	B.SetIJ(1, 0, -2);
-	B.SetIJ(1, 1, -5);
-	B.SetIJ(1, 2, 4);
-
+	A.PrintMatrixSize();
 	A.PrintMatrix();
 	cout << endl << endl << endl << endl;
+
+	Matrix2D B(1, 3);
+	B.FillMatrix(9);
+	B.PrintMatrixSize();
 	B.PrintMatrix();
 	cout << endl << endl << endl << endl;
-
 	Matrix2D AB = MultiplyMatrix(&A, &B);
+	AB.PrintMatrixSize();
 	AB.PrintMatrix();
 
-	// Multiplication Doesn't work. Possiblt i-j mixup ;(
+
+	// Possiblity of i-j mixup ;( NEED to use C (collum) R (row) instead of mxn bs
+	
 
 	return 0;
 }
@@ -110,9 +104,9 @@ Matrix2D AddMatrix(Matrix2D* matrix, int additionNum)
 
 Matrix2D AddMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
 {
-	if (matrix1->Size_I() == matrix2->Size_I() && matrix1->Size_J() == matrix2->Size_J())
+	if (matrix1->Size_M() == matrix2->Size_M() && matrix1->Size_N() == matrix2->Size_N())
 	{
-		Matrix2D temp(matrix1->Size_I(), matrix1->Size_J());
+		Matrix2D temp(matrix1->Size_M(), matrix1->Size_N());
 		for (size_t i = 0; i < matrix1->Matrix.size(); i++)
 		{
 			for (size_t j = 0; j < matrix1->Matrix[i].size(); j++)
@@ -143,20 +137,27 @@ Matrix2D MultiplyMatrix(Matrix2D* matrix, int multiplicationNum)
 
 Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
 {
-	if (matrix1->Size_I() == matrix2->Size_J())
+	if (matrix1->Size_M() == matrix2->Size_N())
 	{
-		Matrix2D temp(matrix1->Size_I(), matrix1->Size_J());
+		Matrix2D temp(matrix1->Size_M(), matrix2->Size_N());
 		temp.FillMatrix(0);
-		for (size_t i = 0; i < matrix1->Size_I(); i++)
+		
+		for (size_t i = 0; i < matrix1->Size_M(); i++)
 		{
-			for (size_t j = 0; j < matrix2->Size_J(); j++)
+			for (size_t j = 0; j < matrix2->Size_N(); j++)
 			{
-				for (size_t k = 0; k < matrix1->Size_I(); k++)
+				for (size_t k = 0; k < matrix1->Size_N(); k++)
 				{
-					temp.Matrix[i][j] = matrix1->Matrix[i][k] * matrix2->Matrix[k][j];
+					temp.Matrix[i][j] += matrix1->Matrix[i][k] * matrix2->Matrix[k][j];
 				}
 			}
 		}
 		return temp;
+	}
+	else
+	{
+		Matrix2D Error(1, 1);
+		Error.FillMatrix(0);
+		return Error;
 	}
 }
