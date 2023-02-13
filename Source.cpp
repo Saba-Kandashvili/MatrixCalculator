@@ -7,20 +7,20 @@ using namespace std;
 class Matrix2D
 {
 public:
-	vector<vector<int>> Matrix;
+	vector<vector<double>> Matrix;
 
-	Matrix2D(int m, int n)
+	Matrix2D(int R, int C)
 	{
-		vector<vector<int>> matrix(m, vector<int>(n));
+		vector<vector<double>> matrix(R, vector <double> (C));
 		Matrix = matrix;
 	}
 
-	void SetIJ( int _i, int _j, int num)
+	void SetIJ( int _i, int _j, double num)
 	{
-		Matrix[_i - 1][_j - 1] = num;
+		Matrix[_i][_j] = num;
 	}
 
-	void FillMatrix(int num)
+	void FillMatrix(double num)
 	{
 		for (size_t i = 0; i < Matrix.size(); i++)
 		{
@@ -40,11 +40,20 @@ public:
 	{
 		for (size_t i = 0; i < Matrix.size(); i++)
 		{
+			cout << "\xB3";
+
 			for (size_t j = 0; j < Matrix[i].size(); j++)
 			{
-				cout << setw(4) << Matrix[i][j];
+				if (j < Matrix[i].size() - 1)
+				{
+					cout << Matrix[i][j] << ";" << setw(3);
+				}
+				else
+				{
+					cout << Matrix[i][j];
+				}
 			}
-			cout << endl;
+			cout << "\xB3" << endl;
 		}
 	}
 
@@ -62,97 +71,46 @@ Matrix2D AddMatrix(Matrix2D*, int);
 Matrix2D AddMatrix(Matrix2D*, Matrix2D*);
 Matrix2D MultiplyMatrix(Matrix2D*, int);
 Matrix2D MultiplyMatrix(Matrix2D*, Matrix2D*);
-int CoshBenFormulla(Matrix2D *, Matrix2D *);
+Matrix2D ElementaryMatrixI(int);
+void ElementaryMatrixL(Matrix2D* matrix, int i, int j, double num);
 
 int main()
 {
-	Matrix2D A(3, 1);
-	A.FillMatrix(2);
-
-	A.PrintMatrixSize();
-	A.PrintMatrix();
-	cout << endl << endl << endl << endl;
-
-	Matrix2D B(1, 3);
-	B.FillMatrix(9);
-	B.PrintMatrixSize();
-	B.PrintMatrix();
-	cout << endl << endl << endl << endl;
-	Matrix2D AB = MultiplyMatrix(&A, &B);
-	AB.PrintMatrixSize();
-	AB.PrintMatrix();
-
-
-	// Possiblity of i-j mixup ;( NEED to use C (collum) R (row) instead of mxn bs
-	
+	Matrix2D test(3, 3);
+	test = ElementaryMatrixI(3);
+	ElementaryMatrixL(&test, 3, 3, 2.5);
+	test.PrintMatrixSize();
+	test.PrintMatrix();
 
 	return 0;
 }
 
 Matrix2D AddMatrix(Matrix2D* matrix, int additionNum)
 {
-	Matrix2D temp = *matrix;
+	Matrix2D ans = *matrix;
 	for (size_t i = 0; i < matrix->Matrix.size(); i++)
 	{
 		for (size_t j = 0; j < matrix->Matrix[i].size(); j++)
 		{
-			temp.Matrix[i][j] += additionNum;
+			ans.Matrix[i][j] += additionNum;
 		}
 	}
-	return temp;
+	return ans;
 }
 
 Matrix2D AddMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
 {
 	if (matrix1->Size_M() == matrix2->Size_M() && matrix1->Size_N() == matrix2->Size_N())
 	{
-		Matrix2D temp(matrix1->Size_M(), matrix1->Size_N());
+		Matrix2D ans(matrix1->Size_M(), matrix1->Size_N());
 		for (size_t i = 0; i < matrix1->Matrix.size(); i++)
 		{
 			for (size_t j = 0; j < matrix1->Matrix[i].size(); j++)
 			{
-				temp.Matrix[i][j] = matrix1->Matrix[i][j] + matrix2->Matrix[i][j];
+				ans.Matrix[i][j] = matrix1->Matrix[i][j] + matrix2->Matrix[i][j];
 			}
 		}
-		return temp;
-	}
-	else
-	{
-		//critical situition. NEEDS AVOIDING
-	}
-}
-
-Matrix2D MultiplyMatrix(Matrix2D* matrix, int multiplicationNum)
-{
-	Matrix2D temp = *matrix;
-	for (size_t i = 0; i < matrix->Matrix.size(); i++)
-	{
-		for (size_t j = 0; j < matrix->Matrix[i].size(); j++)
-		{
-			temp.Matrix[i][j] *= multiplicationNum;
-		}
-	}
-	return temp;
-}
-
-Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
-{
-	if (matrix1->Size_M() == matrix2->Size_N())
-	{
-		Matrix2D temp(matrix1->Size_M(), matrix2->Size_N());
-		temp.FillMatrix(0);
-		
-		for (size_t i = 0; i < matrix1->Size_M(); i++)
-		{
-			for (size_t j = 0; j < matrix2->Size_N(); j++)
-			{
-				for (size_t k = 0; k < matrix1->Size_N(); k++)
-				{
-					temp.Matrix[i][j] += matrix1->Matrix[i][k] * matrix2->Matrix[k][j];
-				}
-			}
-		}
-		return temp;
+		return ans;
 	}
 	else
 	{
@@ -160,4 +118,59 @@ Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
 		Error.FillMatrix(0);
 		return Error;
 	}
+}
+
+Matrix2D MultiplyMatrix(Matrix2D* matrix, int multiplicationNum)
+{
+	Matrix2D ans = *matrix;
+	for (size_t i = 0; i < matrix->Matrix.size(); i++)
+	{
+		for (size_t j = 0; j < matrix->Matrix[i].size(); j++)
+		{
+			ans.Matrix[i][j] *= multiplicationNum;
+		}
+	}
+	return ans;
+}
+
+Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
+{
+	if (matrix1->Size_M() == matrix2->Size_N())
+	{
+		Matrix2D ans(matrix1->Size_M(), matrix2->Size_N());
+		ans.FillMatrix(0);
+		
+		for (size_t i = 0; i < matrix1->Size_M(); i++)
+		{
+			for (size_t j = 0; j < matrix2->Size_N(); j++)
+			{
+				for (size_t k = 0; k < matrix1->Size_N(); k++)
+				{
+					ans.Matrix[i][j] += matrix1->Matrix[i][k] * matrix2->Matrix[k][j];
+				}
+			}
+		}
+		return ans;
+	}
+	else
+	{
+		Matrix2D Error(1, 1);
+		Error.FillMatrix(0);
+		return Error;
+	}
+}
+
+Matrix2D ElementaryMatrixI(int size)
+{
+	Matrix2D ans(size, size);
+	for (size_t i = 0; i < size; i++)
+	{
+		ans.SetIJ(i, i, 1);
+	}
+	return ans;
+}
+
+void ElementaryMatrixL(Matrix2D* matrix, int i, int j, double num)
+{
+	matrix->Matrix[i - 1][j - 1] = num;
 }
