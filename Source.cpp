@@ -76,11 +76,28 @@ void ElementaryMatrixL(Matrix2D* matrix, int i, int j, double num);
 
 int main()
 {
+	/*
 	Matrix2D test(3, 3);
 	test = ElementaryMatrixI(3);
 	ElementaryMatrixL(&test, 3, 3, 2.5);
 	test.PrintMatrixSize();
 	test.PrintMatrix();
+	*/
+
+	Matrix2D testM1(2, 3);
+	testM1.FillMatrix(1);
+	Matrix2D testM2(3, 3);
+	testM2.FillMatrix(1);
+	testM1.PrintMatrixSize(); cout << endl;
+	testM1.PrintMatrix();
+	cout << endl << endl;
+	testM2.PrintMatrixSize(); cout << endl;
+	testM2.PrintMatrix();
+	cout << endl << endl;
+
+	Matrix2D testMa = MultiplyMatrix(&testM1, &testM2);
+	testMa.PrintMatrix();
+
 
 	return 0;
 }
@@ -135,7 +152,7 @@ Matrix2D MultiplyMatrix(Matrix2D* matrix, int multiplicationNum)
 
 Matrix2D MultiplyMatrix(Matrix2D* matrix1, Matrix2D* matrix2)
 {
-	if (matrix1->Size_M() == matrix2->Size_N())
+	if (matrix1->Size_N() == matrix2->Size_M())
 	{
 		Matrix2D ans(matrix1->Size_M(), matrix2->Size_N());
 		ans.FillMatrix(0);
